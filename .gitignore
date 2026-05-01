@@ -1,1 +1,7 @@
-.venv
+.venv/
+notebooks/
+data/
+context_generator.py
+context.md
+models/
+__pycache__/

@@ -1,0 +1,12 @@
+detector:
+  model_path: models/yolo/yolo11m-seg.pt
+  conf: 0.3
+  img_size: 640
+  allowed_classes: [2, 3, 5, 7]
+
+tracker:
+  track_activation_threshold: 0.25
+  lost_track_buffer: 30
+  minimum_matching_threshold: 0.85
+  frame_rate: 30
+

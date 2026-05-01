@@ -11,8 +11,8 @@ from src.core.pipeline import Pipeline
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     
-    # Input video path provided by the user
     parser.add_argument("--input", type=str, default=None)
+    parser.add_argument("--config", type=str, default="configs/pipeline.yaml")
     
     return parser.parse_args()
 
@@ -24,7 +24,7 @@ def main() -> None:
     input_path = args.input
 
     # Create the main processing pipeline
-    pipeline = Pipeline()
+    pipeline = Pipeline(config_path=args.config)
     
     # Execute pipeline on the requested input file
     pipeline.run(input_path)

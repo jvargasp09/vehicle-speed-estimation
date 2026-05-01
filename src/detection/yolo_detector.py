@@ -10,12 +10,14 @@ class YOLODetector(BaseDetector):
     It loads the YOLO model and performs object detection on input frames.
     """
 
-    def __init__(self, model_path="models/yolo/yolo11n.pt", conf=0.5):
+    def __init__(self, model_path="models/yolo/yolo11n.pt", conf=0.5, allowed_classes=[2, 3, 5, 7], img_size=640):
         """
         Initializes the YOLO detector with the given model and confidence threshold.
         Args:
             model_path (str): Path to the YOLO model weights.
             conf (float): Confidence threshold for detection.
+            allowed_classes (list): List of classes to detect. If None, all classes are detected.
+            img_size (int): Image size for inference.
         """
         # Load the YOLO model from the specified path
         self.model = YOLO(model_path)
@@ -28,7 +30,9 @@ class YOLODetector(BaseDetector):
         self.half = device == "cuda"  # Use half precision on CUDA (GPU) if available
 
         self.conf = conf  # Set the confidence threshold for filtering detections
-        self.allowed_classes = [2, 3, 5, 7]  # Classes to detect (e.g., car, truck, bus)
+        self.allowed_classes = allowed_classes # Set the list of allowed classes for detection (e.g., vehicles)
+
+        self.imgsz = img_size  # Image size for inference (can be adjusted based on model requirements)
 
 
     def detect(self, frame):
@@ -45,7 +49,7 @@ class YOLODetector(BaseDetector):
             classes=self.allowed_classes,  # Only detect specified classes
             verbose=False,  # Disable verbose logging
             half=self.half,  # Use half precision if running on CUDA
-            imgsz=640  # Image size for inference (adjust based on model)
+            imgsz=self.imgsz  # Image size for inference (adjust based on model)
         )[0]
 
         detections = []  # List to store detection results

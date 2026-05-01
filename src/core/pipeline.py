@@ -1,19 +1,34 @@
 import cv2
+import yaml
 
 from src.detection.yolo_detector import YOLODetector
 from src.tracking.byte_tracker import ByteTrackWrapper
 
-from src.visualization.visualization import draw_detections, draw_tracks
+from src.visualization.visualization import draw_tracks
 
 class Pipeline:
 
-    def __init__(self) -> None:
-        self.detector = YOLODetector("models/yolo/yolo11m-seg.pt", conf=0.3)
+    def __init__(self, config_path: str = "configs/pipeline.yaml") -> None:
+        # ---- Load config ----
+        with open(config_path, "r") as f:
+            self.cfg = yaml.safe_load(f)
+
+        # ---- Detector ----
+        det_cfg = self.cfg["detector"]
+        self.detector = YOLODetector(
+            model_path=det_cfg["model_path"],
+            conf=det_cfg["conf"],
+            allowed_classes=det_cfg["allowed_classes"],
+            img_size=det_cfg["img_size"]
+        )
+
+        # ---- Tracker ----
+        trk_cfg = self.cfg["tracker"]
         self.tracker = ByteTrackWrapper(
-            track_activation_threshold=0.25,
-            lost_track_buffer=30,
-            minimum_matching_threshold=0.85,
-            frame_rate=30
+            track_activation_threshold=trk_cfg["track_activation_threshold"],
+            lost_track_buffer=trk_cfg["lost_track_buffer"],
+            minimum_matching_threshold=trk_cfg["minimum_matching_threshold"],
+            frame_rate=trk_cfg["frame_rate"]
         )
 
     def run(self, input_path: str) -> None:

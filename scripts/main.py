@@ -13,6 +13,8 @@ def parse_args() -> argparse.Namespace:
     
     parser.add_argument("--input", type=str, default=None)
     parser.add_argument("--config", type=str, default="configs/pipeline.yaml")
+    parser.add_argument("--output", type=str, default=None,
+                        help="Path to save the annotated video (e.g. data/output.mp4)")
     
     return parser.parse_args()
 
@@ -27,7 +29,7 @@ def main() -> None:
     pipeline = Pipeline(config_path=args.config)
     
     # Execute pipeline on the requested input file
-    pipeline.run(input_path)
+    pipeline.run(input_path, output_path=args.output)
 
 
 if __name__ == "__main__":
